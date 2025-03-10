@@ -1,17 +1,12 @@
 
 import React, { useState } from 'react';
 import MedicalScribeView from '@/components/MedicalScribe/MedicalScribeView';
-import { MedicalScribeData, HealthGoal, ProfileData, ReviewData } from '@/types/goalTypes';
+import { MedicalScribeData, HealthGoal, ProfileData, ReviewData, Transcript } from '@/types/goalTypes';
 import { useToast } from '@/hooks/use-toast';
 
 const Index = () => {
   const { toast } = useToast();
-  const [savedGoal, setSavedGoal] = useState<HealthGoal | null>(null);
-  const [savedProfile, setSavedProfile] = useState<ProfileData | null>(null);
-  const [savedReview, setSavedReview] = useState<ReviewData | null>(null);
-
-  // Example medical scribe data
-  const sampleData: MedicalScribeData = {
+  const [medicalData, setMedicalData] = useState<MedicalScribeData>({
     transcript: [
       {
         time: "2025-03-09T15:30:00Z",
@@ -139,33 +134,120 @@ const Index = () => {
         }
       }
     }
-  };
+  });
+
+  // Here we track the most recent saved data for display
+  const [savedData, setSavedData] = useState<{
+    goal?: HealthGoal;
+    profile?: ProfileData;
+    review?: ReviewData;
+    transcript?: Transcript[];
+    allData?: MedicalScribeData;
+  }>({});
 
   const handleSaveGoal = (goal: HealthGoal) => {
-    setSavedGoal(goal);
+    // Update both the current data and saved record
+    setMedicalData(prev => ({
+      ...prev,
+      note: {
+        ...prev.note,
+        goal_data: goal
+      }
+    }));
+    
+    setSavedData(prev => ({
+      ...prev,
+      goal
+    }));
+    
     toast({
       title: "Health goal saved",
       description: "Your health goal has been saved successfully."
     });
+    
     console.log('Saved goal:', goal);
   };
 
   const handleSaveProfile = (profile: ProfileData) => {
-    setSavedProfile(profile);
+    setMedicalData(prev => ({
+      ...prev,
+      note: {
+        ...prev.note,
+        profile_data: profile
+      }
+    }));
+    
+    setSavedData(prev => ({
+      ...prev,
+      profile
+    }));
+    
     toast({
       title: "Profile saved",
       description: "The patient profile has been updated successfully."
     });
+    
     console.log('Saved profile:', profile);
   };
 
   const handleSaveReview = (review: ReviewData) => {
-    setSavedReview(review);
+    setMedicalData(prev => ({
+      ...prev,
+      note: {
+        ...prev.note,
+        review_data: review
+      }
+    }));
+    
+    setSavedData(prev => ({
+      ...prev,
+      review
+    }));
+    
     toast({
       title: "Medical review saved",
       description: "The medical review has been updated successfully."
     });
+    
     console.log('Saved review:', review);
+  };
+
+  const handleSaveTranscript = (transcript: Transcript[]) => {
+    setMedicalData(prev => ({
+      ...prev,
+      transcript
+    }));
+    
+    setSavedData(prev => ({
+      ...prev,
+      transcript
+    }));
+    
+    toast({
+      title: "Transcript saved",
+      description: "The conversation transcript has been updated successfully."
+    });
+    
+    console.log('Saved transcript:', transcript);
+  };
+
+  const handleSaveAll = (data: MedicalScribeData) => {
+    setMedicalData(data);
+    
+    setSavedData({
+      allData: data,
+      goal: data.note.goal_data,
+      profile: data.note.profile_data,
+      review: data.note.review_data,
+      transcript: data.transcript
+    });
+    
+    toast({
+      title: "All data saved",
+      description: "All medical scribe documentation has been saved successfully."
+    });
+    
+    console.log('Saved all data:', data);
   };
 
   return (
@@ -174,39 +256,60 @@ const Index = () => {
         <h1 className="text-3xl font-bold mb-8">Medical Scribe System</h1>
         
         <MedicalScribeView 
-          data={sampleData} 
+          data={medicalData} 
           onSaveGoal={handleSaveGoal}
           onSaveProfile={handleSaveProfile}
           onSaveReview={handleSaveReview}
+          onSaveTranscript={handleSaveTranscript}
+          onSaveAll={handleSaveAll}
         />
         
-        {(savedGoal || savedProfile || savedReview) && (
+        {(savedData.goal || savedData.profile || savedData.review || savedData.transcript || savedData.allData) && (
           <div className="mt-8">
             <h2 className="text-xl font-semibold mb-2">Successfully Saved Data:</h2>
             
-            {savedGoal && (
+            {savedData.allData && (
+              <div className="mb-4 p-4 bg-indigo-50 border border-indigo-200 rounded-md">
+                <h3 className="font-medium mb-2">Complete Documentation</h3>
+                <p className="text-sm text-gray-600 mb-2">All sections saved together</p>
+                <pre className="bg-white p-4 rounded overflow-auto max-h-60 text-xs">
+                  {JSON.stringify(savedData.allData, null, 2)}
+                </pre>
+              </div>
+            )}
+            
+            {savedData.transcript && !savedData.allData && (
+              <div className="mb-4 p-4 bg-amber-50 border border-amber-200 rounded-md">
+                <h3 className="font-medium mb-2">Transcript</h3>
+                <pre className="bg-white p-4 rounded overflow-auto max-h-60 text-xs">
+                  {JSON.stringify(savedData.transcript, null, 2)}
+                </pre>
+              </div>
+            )}
+            
+            {savedData.goal && !savedData.allData && (
               <div className="mb-4 p-4 bg-green-50 border border-green-200 rounded-md">
                 <h3 className="font-medium mb-2">Health Goal</h3>
                 <pre className="bg-white p-4 rounded overflow-auto max-h-60 text-xs">
-                  {JSON.stringify(savedGoal, null, 2)}
+                  {JSON.stringify(savedData.goal, null, 2)}
                 </pre>
               </div>
             )}
             
-            {savedProfile && (
+            {savedData.profile && !savedData.allData && (
               <div className="mb-4 p-4 bg-blue-50 border border-blue-200 rounded-md">
                 <h3 className="font-medium mb-2">Patient Profile</h3>
                 <pre className="bg-white p-4 rounded overflow-auto max-h-60 text-xs">
-                  {JSON.stringify(savedProfile, null, 2)}
+                  {JSON.stringify(savedData.profile, null, 2)}
                 </pre>
               </div>
             )}
             
-            {savedReview && (
+            {savedData.review && !savedData.allData && (
               <div className="mb-4 p-4 bg-purple-50 border border-purple-200 rounded-md">
                 <h3 className="font-medium mb-2">Medical Review</h3>
                 <pre className="bg-white p-4 rounded overflow-auto max-h-60 text-xs">
-                  {JSON.stringify(savedReview, null, 2)}
+                  {JSON.stringify(savedData.review, null, 2)}
                 </pre>
               </div>
             )}
