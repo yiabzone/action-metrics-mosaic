@@ -1,12 +1,14 @@
 
 import React, { useState } from 'react';
 import MedicalScribeView from '@/components/MedicalScribe/MedicalScribeView';
-import { MedicalScribeData, HealthGoal } from '@/types/goalTypes';
+import { MedicalScribeData, HealthGoal, ProfileData, ReviewData } from '@/types/goalTypes';
 import { useToast } from '@/hooks/use-toast';
 
 const Index = () => {
   const { toast } = useToast();
   const [savedGoal, setSavedGoal] = useState<HealthGoal | null>(null);
+  const [savedProfile, setSavedProfile] = useState<ProfileData | null>(null);
+  const [savedReview, setSavedReview] = useState<ReviewData | null>(null);
 
   // Example medical scribe data
   const sampleData: MedicalScribeData = {
@@ -148,6 +150,24 @@ const Index = () => {
     console.log('Saved goal:', goal);
   };
 
+  const handleSaveProfile = (profile: ProfileData) => {
+    setSavedProfile(profile);
+    toast({
+      title: "Profile saved",
+      description: "The patient profile has been updated successfully."
+    });
+    console.log('Saved profile:', profile);
+  };
+
+  const handleSaveReview = (review: ReviewData) => {
+    setSavedReview(review);
+    toast({
+      title: "Medical review saved",
+      description: "The medical review has been updated successfully."
+    });
+    console.log('Saved review:', review);
+  };
+
   return (
     <div className="container mx-auto py-8 px-4">
       <div className="max-w-7xl mx-auto">
@@ -155,15 +175,41 @@ const Index = () => {
         
         <MedicalScribeView 
           data={sampleData} 
-          onSaveGoal={handleSaveGoal} 
+          onSaveGoal={handleSaveGoal}
+          onSaveProfile={handleSaveProfile}
+          onSaveReview={handleSaveReview}
         />
         
-        {savedGoal && (
-          <div className="mt-8 p-4 bg-green-50 border border-green-200 rounded-md">
-            <h2 className="text-xl font-semibold mb-2">Successfully Saved Goal:</h2>
-            <pre className="bg-white p-4 rounded overflow-auto max-h-96">
-              {JSON.stringify(savedGoal, null, 2)}
-            </pre>
+        {(savedGoal || savedProfile || savedReview) && (
+          <div className="mt-8">
+            <h2 className="text-xl font-semibold mb-2">Successfully Saved Data:</h2>
+            
+            {savedGoal && (
+              <div className="mb-4 p-4 bg-green-50 border border-green-200 rounded-md">
+                <h3 className="font-medium mb-2">Health Goal</h3>
+                <pre className="bg-white p-4 rounded overflow-auto max-h-60 text-xs">
+                  {JSON.stringify(savedGoal, null, 2)}
+                </pre>
+              </div>
+            )}
+            
+            {savedProfile && (
+              <div className="mb-4 p-4 bg-blue-50 border border-blue-200 rounded-md">
+                <h3 className="font-medium mb-2">Patient Profile</h3>
+                <pre className="bg-white p-4 rounded overflow-auto max-h-60 text-xs">
+                  {JSON.stringify(savedProfile, null, 2)}
+                </pre>
+              </div>
+            )}
+            
+            {savedReview && (
+              <div className="mb-4 p-4 bg-purple-50 border border-purple-200 rounded-md">
+                <h3 className="font-medium mb-2">Medical Review</h3>
+                <pre className="bg-white p-4 rounded overflow-auto max-h-60 text-xs">
+                  {JSON.stringify(savedReview, null, 2)}
+                </pre>
+              </div>
+            )}
           </div>
         )}
       </div>
