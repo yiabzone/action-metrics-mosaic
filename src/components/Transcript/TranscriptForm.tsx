@@ -20,7 +20,7 @@ const TranscriptForm: React.FC<TranscriptFormProps> = ({ transcripts: initialTra
   const { toast } = useToast();
   const [transcripts, setTranscripts] = useState<Transcript[]>(initialTranscripts);
 
-  const handleSpeakerChange = (index: number, value: string) => {
+  const handleSpeakerChange = (index: number, value: "patient" | "doctor") => {
     const updatedTranscripts = [...transcripts];
     updatedTranscripts[index] = {
       ...updatedTranscripts[index],
@@ -54,7 +54,7 @@ const TranscriptForm: React.FC<TranscriptFormProps> = ({ transcripts: initialTra
       ...transcripts,
       {
         time: now,
-        speaker: "doctor",
+        speaker: "patient", // Use the literal value that matches the type
         content: ""
       }
     ]);
@@ -112,7 +112,7 @@ const TranscriptForm: React.FC<TranscriptFormProps> = ({ transcripts: initialTra
                   <Label htmlFor={`speaker-${index}`}>Speaker</Label>
                   <Select
                     value={entry.speaker}
-                    onValueChange={(value) => handleSpeakerChange(index, value)}
+                    onValueChange={(value) => handleSpeakerChange(index, value as "patient" | "doctor")}
                   >
                     <SelectTrigger id={`speaker-${index}`}>
                       <SelectValue placeholder="Select speaker" />

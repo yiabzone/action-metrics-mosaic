@@ -163,9 +163,11 @@ export interface MedicalNote {
   review_data: ReviewData;
 }
 
+export type SpeakerType = "patient" | "doctor" | "nurse" | "other";
+
 export interface Transcript {
   time: string;
-  speaker: "patient" | "doctor";
+  speaker: SpeakerType;
   content: string;
 }
 
