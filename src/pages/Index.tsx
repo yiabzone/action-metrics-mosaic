@@ -167,6 +167,11 @@ const Index = () => {
           diagnosis_reasoning: "Based on patient's description of headache characteristics and lack of focal neurological deficits.",
           status: "stable"
         },
+        assessment_suggestion: {
+          primary_diagnosis: "Tension-type Headache with Possible Migraine Features",
+          differential_diagnosis: "Chronic Migraine, Sinus Headache, Medication Overuse Headache",
+          diagnosis_reasoning: "Pattern of bilateral pressure-type pain without aura but with moderate intensity suggests tension-type headache. However, intensity rating of up to 7/10 raises possibility of migrainous features."
+        },
         plan: {
           management: "Recommend lifestyle modifications including increased hydration and stress management. Over-the-counter pain relief as needed. Monitor headache frequency and intensity.",
           lifestyle_advice: "Increase water intake, ensure adequate sleep, explore stress reduction techniques.",
@@ -174,6 +179,13 @@ const Index = () => {
           patient_education: "Provided information on tension headaches, lifestyle modifications, and medication use.",
           treatment_goal: "Reduce headache frequency and intensity to improve patient's quality of life.",
           plan_reasoning: "Conservative management approach for suspected tension headaches, with close follow-up to monitor progress and adjust plan if needed."
+        },
+        plan_suggestion: {
+          management: "Initiate conservative treatment with scheduled over-the-counter analgesics for 2 weeks, then as needed. Consider amitriptyline 10mg at bedtime if no improvement in 2 weeks.",
+          lifestyle_advice: "Implement regular sleep schedule (7-8 hours nightly), hydration target of 2.5L daily, and daily stress reduction technique (breathing exercises or meditation for 10 minutes).",
+          follow_up: "Follow-up in 2 weeks to assess treatment response; consider neurology referral if no improvement or worsening symptoms.",
+          patient_education: "Headache diary to identify triggers; information pamphlet on tension-type headache versus migraine; medication usage guidelines.",
+          treatment_goal: "Reduce headache frequency by 50% within 4 weeks; decrease average intensity to ≤3/10; identify at least 2 specific triggers."
         },
         next_review: "2024-08-10 10:00",
         prescription: [],
@@ -256,8 +268,8 @@ const Index = () => {
     }));
     
     toast({
-      title: "Medical review saved",
-      description: "The medical review has been updated successfully."
+      title: "Doctor note saved",
+      description: "The doctor note has been updated successfully."
     });
     
     console.log('Saved review:', review);
@@ -358,7 +370,7 @@ const Index = () => {
             
             {savedData.review && !savedData.allData && (
               <div className="mb-4 p-4 bg-purple-50 border border-purple-200 rounded-md">
-                <h3 className="font-medium mb-2">Medical Review</h3>
+                <h3 className="font-medium mb-2">Doctor Note</h3>
                 <div className="bg-white p-4 rounded overflow-auto max-h-60 text-sm font-mono whitespace-pre-wrap">
                   {formatReviewForEMR(savedData.review)}
                 </div>
