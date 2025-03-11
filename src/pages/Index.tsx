@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
 import MedicalScribeView from '@/components/MedicalScribe/MedicalScribeView';
-import { MedicalScribeData, HealthGoal, ProfileData, ReviewData, Transcript } from '@/types/goalTypes';
+import { MedicalScribeData, HealthGoal, ProfileData, ReviewData, Transcript, AssessmentSuggestion, PlanSuggestion } from '@/types/goalTypes';
 import { useToast } from '@/hooks/use-toast';
 import { 
   formatTranscriptForEMR,
@@ -214,7 +214,10 @@ const Index = () => {
       ...prev,
       note: {
         ...prev.note,
-        goal_data: goal
+        goal_data: {
+          ...prev.note.goal_data,
+          ...goal
+        }
       }
     }));
     

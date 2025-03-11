@@ -137,11 +137,27 @@ export interface Summary {
   discharge_instructions?: string;
 }
 
+export interface AssessmentSuggestion {
+  primary_diagnosis?: string;
+  differential_diagnosis?: string;
+  diagnosis_reasoning?: string;
+}
+
+export interface PlanSuggestion {
+  management?: string;
+  lifestyle_advice?: string;
+  follow_up?: string;
+  patient_education?: string;
+  treatment_goal?: string;
+}
+
 export interface ReviewData {
   subjective: Subjective;
   objective: Objective;
   assessment: Assessment;
+  assessment_suggestion?: AssessmentSuggestion;
   plan: Plan;
+  plan_suggestion?: PlanSuggestion;
   next_review: string;
   prescription: Prescription[];
   investigation: Investigation[];
